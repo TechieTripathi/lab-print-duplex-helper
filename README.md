@@ -4,6 +4,10 @@ This project started from a very practical problem in my lab.
 
 We have a printer that can only print on one side of the paper. Many times we still need double-sided printouts, and doing that manually is annoying, error-prone, and wastes time because people have to remember page order, paper rotation, and retry steps. I built this tool so my lab mates can follow a guided workflow and get duplex-style output more reliably from a single-sided printer.
 
+## UI
+
+![Duplex Print Helper UI](docs/images/UI.png)
+
 ## What It Does
 
 Duplex Print Helper is a local Flask web app that helps users print double-sided documents in two guided passes.
