@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Duplex Print Helper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <main class="page">
+      <section class="panel">
+        <div class="hero">
+          <div class="heroMain">
+            <p class="eyebrow">Local Print Studio</p>
+            <div class="heroTitleRow">
+              <div class="heroCopy">
+                <h1>Duplex Print Helper</h1>
+                <p class="intro">Turn a single-sided printer into a guided print workflow for clean one-pass or two-pass output.</p>
+              </div>
+              <div class="heroModeBox">
+                <p class="microStatus">Print Type</p>
+                <div class="modePicker modePickerTop">
+                  <label class="modeOption">
+                    <input type="radio" name="printMode" value="single">
+                    <span>Single-sided</span>
+                  </label>
+                  <label class="modeOption">
+                    <input type="radio" name="printMode" value="duplex" checked>
+                    <span>Double-sided</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="heroRibbon">
+              <span>Upload once</span>
+              <span>Select printer</span>
+              <span>Print with guidance</span>
+            </div>
+          </div>
+          <div class="heroNote">
+            <p class="panelLabel">Before You Start</p>
+            <strong>Keep the printed stack in order after Pass 1.</strong>
+            <p>When prompted, rotate the full stack 180 degrees and reinsert it without flipping the pages.</p>
+          </div>
+        </div>
+
+        <div class="layout">
+          <div class="mainColumn">
+            <div class="section">
+              <div class="workflowHeader">
+                <h2>Workflow</h2>
+                <p class="helpText">Follow the highlighted stage from left to right.</p>
+              </div>
+              <div class="steps" id="stepsList">
+                <article class="stepCard is-active" id="stepUpload">
+                  <span class="stepNumber">1</span>
+                  <div class="stepCopy">
+                    <h3>Prepare your PDF</h3>
+                    <p>Drop in the file and choose the pages you want.</p>
+                  </div>
+                </article>
+                <article class="stepCard" id="stepPrinter">
+                  <span class="stepNumber">2</span>
+                  <div class="stepCopy">
+                    <h3>Select a printer</h3>
+                    <p>Choose where the job should be sent.</p>
+                  </div>
+                </article>
+                <article class="stepCard" id="stepPass1">
+                  <span class="stepNumber">3</span>
+                  <div class="stepCopy">
+                    <h3>Print Pass 1</h3>
+                    <p>Wait for the active print job to finish.</p>
+                  </div>
+                </article>
+                <article class="stepCard" id="stepPass2">
+                  <span class="stepNumber">4</span>
+                  <div class="stepCopy">
+                    <h3>Rotate, reinsert, and finish</h3>
+                    <p id="stepPass2Text">When Pass 1 completes, rotate the stack 180 degrees, do not flip it, reinsert it, then continue.</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div class="actionCard actionCardUpload section">
+              <div class="cardHeader">
+                <div>
+                  <h2>Step 1: Upload File</h2>
+                  <p class="helpText">Drop in a PDF or DOCX file, optionally limit the page range, then prepare the exact print file for this session.</p>
+                </div>
+                <p id="selectedFileHint" class="microStatus">No file selected</p>
+              </div>
+              <div class="uploadStudio">
+                <label class="dropzone" id="dropzone" for="pdfFile">
+                  <input id="pdfFile" class="fileInput" type="file" accept="application/pdf,.pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx">
+                  <span class="dropzoneBadge" id="dropzoneBadge">PDF or DOCX</span>
+                  <strong id="dropzoneTitle">Drop your print file here</strong>
+                  <span class="dropzoneText" id="dropzoneText">or click to browse from this device</span>
+                  <span class="dropzoneMeta" id="dropzoneMeta">DOCX files are converted to PDF before the print workflow starts.</span>
+                  <span class="dropzoneFile" id="dropzoneFile" hidden></span>
+                </label>
+                <div class="rangeStudio">
+                  <label class="fieldLabel" for="pageRange">Page range</label>
+                  <div class="metaGrid">
+                    <div class="metaCard " style="display: none;">
+                      <span class="metaLabel">File</span>
+                      <strong class="metaValue" id="metaFileName">-</strong>
+                    </div>
+                    <div class="metaCard">
+                      <span class="metaLabel">Pages</span>
+                      <strong class="metaValue" id="metaTotalPages">-</strong>
+                    </div>
+                    <div class="metaCard">
+                      <span class="metaLabel">Size</span>
+                      <strong class="metaValue" id="metaFileSize">-</strong>
+                    </div>
+                  </div>
+                  <input
+                    id="pageRange"
+                    type="text"
+                    inputmode="text"
+                    placeholder="Leave blank for all pages, or enter 1-4, 7, 9-12"
+                  >
+                  <div class="rangeMeta">
+                    <p class="fieldHint">Examples: <code>1-4</code>, <code>3, 5, 8-10</code>. The range is normalized before printing.</p>
+                    <p id="pageRangeBadge" class="rangeBadge">All pages</p>
+                  </div>
+                  <div class="uploadActions">
+                    <button id="uploadButton" type="button">Prepare Print File</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="actionCard actionCardPrinter section">
+              <div class="cardHeader">
+                <div>
+                  <h2>Step 2: Choose Printer</h2>
+                  <p class="helpText">Pick the printer that should receive this job.</p>
+                </div>
+                <p id="printerCountHint" class="microStatus">Checking printers...</p>
+              </div>
+              <div class="row">
+                <select id="printerSelect">
+                  <option value="">Loading printers...</option>
+                </select>
+                <button id="refreshPrintersButton" type="button">Refresh</button>
+              </div>
+            </div>
+
+            <div class="actionCard actionCardStart section">
+              <div class="cardHeader">
+                <div>
+                  <h2>Step 3: Start Printing</h2>
+                  <p class="helpText">Check the summary, then start the job using the selected print type.</p>
+                </div>
+              </div>
+              <dl class="summary">
+                <div><dt>File</dt><dd id="summaryFile">-</dd></div>
+                <div><dt>Source Pages</dt><dd id="summaryOriginalPages">-</dd></div>
+                <div><dt>Selected Pages</dt><dd id="summaryPages">-</dd></div>
+                <div><dt>Page Range</dt><dd id="summaryPageRange">All pages</dd></div>
+                <div><dt id="summaryAdjustedLabel">Pages to Print</dt><dd id="summaryAdjustedPages">-</dd></div>
+                <div><dt>Printer</dt><dd id="summaryPrinter">-</dd></div>
+              </dl>
+              <div class="primaryActionBar">
+                <button id="startButton" type="button" disabled>Start Duplex Print</button>
+              </div>
+            </div>
+
+            <p id="message" class="message"></p>
+          </div>
+
+          <aside class="sideColumn">
+            <div class="statusPanel section">
+              <p class="panelLabel">What To Do Now</p>
+              <p id="workflowState" class="state">IDLE</p>
+              <p id="currentInstruction" class="instruction">Choose a PDF, set a page range if needed, then prepare the print file.</p>
+              <div class="statusGrid">
+                <p id="printerStatus" class="statusLine">Printer: -</p>
+                <p id="jobStatus" class="statusLine">Job: -</p>
+              </div>
+            </div>
+
+            <div class="tipPanel section">
+              <p class="panelLabel" id="tipPanelTitle">Quick Reminder</p>
+              <ul class="tipList" id="tipList">
+                <li>Wait for Pass 1 to finish completely.</li>
+                <li>Rotate the whole stack 180 degrees.</li>
+                <li>Do not flip the pages.</li>
+                <li>Reinsert the stack and continue.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="reinsertDialog">
+      <h2>Pass 1 completed.</h2>
+      <p class="dialogLead">Prepare the paper stack for the second pass.</p>
+      <p>1. Pick up the full printed stack as-is.</p>
+      <p>2. Rotate pages 180 degrees.</p>
+      <p>3. Do NOT flip the pages.</p>
+      <p>4. Reinsert the stack into the printer.</p>
+      <form method="dialog">
+        <button id="continueButton" type="button">Continue when ready</button>
+      </form>
+    </dialog>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

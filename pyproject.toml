@@ -1,0 +1,11 @@
+[project]
+name = "duplex-print-helper"
+version = "0.1.0"
+description = "Guided duplex-style printing workflow for single-sided lab printers"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask==3.0.3",
+    "pycups==2.0.4",
+    "pypdf==4.3.1",
+]
